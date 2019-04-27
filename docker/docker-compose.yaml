@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+  callisto-blog:
+    image: callisto/blog-php
+    container_name: callisto-blog
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ../blog/:/var/www/html/
+    depends_on:
+      - callisto-blog-mysql
+    networks: 
+      - callisto
+  callisto-blog-mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=${ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE}
+      - MYSQL_USER=${USER}
+      - MYSQL_PASSWORD=${USER_PASSWORD}
+    container_name: callisto-blog-mysql
+    volumes:
+      - /data-blog/callisto-blog:/var/lib/mysql
+    networks:
+      callisto:
+        aliases:
+          - callisto-blog-mysql
+networks:
+  callisto:
+    external: true
+      
